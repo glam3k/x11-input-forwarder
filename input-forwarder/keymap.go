@@ -21,16 +21,13 @@ func buildKeysymMap(xconn *xgb.Conn) (map[uint32]xproto.Keycode, error) {
 	keysymToKeycode := make(map[uint32]xproto.Keycode)
 	perKeycode := int(reply.KeysymsPerKeycode)
 
-	for kc := minKc; kc <= maxKc; kc++ {
-		base := int(kc-minKc) * perKeycode
-		for i := 0; i < perKeycode; i++ {
-			sym := reply.Keysyms[base+i]
-			if sym == 0 {
-				continue
-			}
-			if _, exists := keysymToKeycode[uint32(sym)]; !exists {
-				keysymToKeycode[uint32(sym)] = kc
-			}
+	for idx, sym := range reply.Keysyms {
+		if sym == 0 {
+			continue
+		}
+		kc := xproto.Keycode(int(minKc) + idx/perKeycode)
+		if _, exists := keysymToKeycode[uint32(sym)]; !exists {
+			keysymToKeycode[uint32(sym)] = kc
 		}
 	}
 
