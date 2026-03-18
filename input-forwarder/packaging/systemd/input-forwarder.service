@@ -1,0 +1,13 @@
+[Unit]
+Description=Rackcore Input Forwarder
+After=rackcore-desktop.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:1
+ExecStart=/usr/local/bin/input-forwarder
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
